@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Rendered by install-dispatcher.sh and written to @LAUNCH_AGENT_DIR@/com.example.agent-kanban-dispatcher.plist. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.example.agent-kanban-dispatcher</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>@NODE@</string>
+    <string>@DISPATCHER@</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>30</integer>
+  <key>WorkingDirectory</key>
+  <string>@HOME@</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>@PATH@</string>
+    <key>HOME</key>
+    <string>@HOME@</string>
+    <key>DISPATCHER_STATE</key>
+    <string>@STATE_DIR@/dispatcher.json</string>
+    <key>DISPATCHER_LOG</key>
+    <string>@LOG_DIR@/agent-kanban-dispatcher.log</string>
+    <key>DISPATCHER_SCRATCH</key>
+    <string>@STATE_DIR@/scratch</string>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>@LOG_DIR@/agent-kanban-dispatcher.launchd.log</string>
+  <key>StandardErrorPath</key>
+  <string>@LOG_DIR@/agent-kanban-dispatcher.launchd.log</string>
+</dict>
+</plist>

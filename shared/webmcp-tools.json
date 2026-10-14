@@ -1,0 +1,541 @@
+[
+  {
+    "name": "kanban_get_overview",
+    "description": "Summarize all projects, including card counts by status, blocked cards, items awaiting owner input, stale-work alerts, project handoffs, and current focus cards. Use this for a quick view of overall progress or to find blockers and owner decisions.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "kanban_list_cards",
+    "description": "List cards by optional filters; archived cards are excluded by default. Find work by project, status, assignee, blocked or owner-waiting state, or search titles, descriptions, branches, and tags.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "description": "Project ID (slug, for example sample-project)"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "backlog",
+            "todo",
+            "in_progress",
+            "review",
+            "done"
+          ],
+          "description": "Card status"
+        },
+        "agent": {
+          "type": "string",
+          "enum": [
+            "codex",
+            "claude",
+            "owner",
+            "none"
+          ],
+          "description": "Current assignee"
+        },
+        "blocked": {
+          "type": "boolean",
+          "description": "When true, list only blocked cards"
+        },
+        "q": {
+          "type": "string",
+          "description": "Search titles, descriptions, branches, and tags"
+        },
+        "needs_owner": {
+          "type": "boolean",
+          "description": "When true, list only cards awaiting an owner decision or acceptance"
+        }
+      },
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "kanban_get_card",
+    "description": "Get a card's complete details, including all work notes and event history. Use this when you need the full history of a card.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "card_id": {
+          "type": "integer",
+          "description": "Card ID (the number after #)"
+        }
+      },
+      "required": [
+        "card_id"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "kanban_get_view",
+    "description": "Read what the user currently sees: route, board layout (flat or swimlane), selected project, active filters, and open card. Use this to answer what is on screen or to act in the current UI context.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "kanban_create_card",
+    "description": "Create a card in the specified project; new cards default to the To Do column. Use this for new work that needs tracking. Prefer the task-package template in the description (Goal, Scope, Acceptance, Related files and docs, Key decisions). Summarize and link relevant material instead of pasting an entire specification.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "description": "Project ID (slug)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Card title, up to 200 characters"
+        },
+        "description": {
+          "type": "string",
+          "description": "Markdown description"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "backlog",
+            "todo",
+            "in_progress",
+            "review",
+            "done"
+          ],
+          "description": "Initial status; defaults to todo"
+        },
+        "agent": {
+          "type": "string",
+          "enum": [
+            "codex",
+            "claude",
+            "owner",
+            "none"
+          ],
+          "description": "Assignee; defaults to none"
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "p0",
+            "p1",
+            "p2",
+            "p3"
+          ],
+          "description": "Priority; defaults to p2"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Git branch"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tags"
+        },
+        "due_date": {
+          "type": "string",
+          "description": "Due date in YYYY-MM-DD format"
+        }
+      },
+      "required": [
+        "project_id",
+        "title"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {}
+  },
+  {
+    "name": "kanban_update_card",
+    "description": "Update selected card fields: title, description, assignee, priority, blocked state, owner-waiting state, branch, session reference, tags, or due date. Change only the fields that need updating. Use kanban_move_card to change status. The description is replaced in full, so read the existing brief first and preserve its task-package template; add important decisions under Key decisions.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "card_id": {
+          "type": "integer",
+          "description": "Card ID"
+        },
+        "title": {
+          "type": "string",
+          "description": "New title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Replacement Markdown description"
+        },
+        "agent": {
+          "type": "string",
+          "enum": [
+            "codex",
+            "claude",
+            "owner",
+            "none"
+          ],
+          "description": "Assignee"
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "p0",
+            "p1",
+            "p2",
+            "p3"
+          ],
+          "description": "Priority"
+        },
+        "blocked": {
+          "type": "boolean",
+          "description": "Whether the card is blocked"
+        },
+        "blocked_reason": {
+          "type": "string",
+          "description": "Reason the card is blocked; recommended when blocked=true"
+        },
+        "branch": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Git branch; null clears it"
+        },
+        "session_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Codex job ID or Claude session URL; null clears it"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Replacement tag list"
+        },
+        "due_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Due date in YYYY-MM-DD format; null clears it"
+        },
+        "needs_owner": {
+          "type": "boolean",
+          "description": "Whether the card awaits an owner decision or acceptance"
+        }
+      },
+      "required": [
+        "card_id"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {}
+  },
+  {
+    "name": "kanban_move_card",
+    "description": "Move a card to a status column. Use before_id or after_id to place it within that column. Use this when starting work, submitting for review, or completing a card.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "card_id": {
+          "type": "integer",
+          "description": "Card ID"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "backlog",
+            "todo",
+            "in_progress",
+            "review",
+            "done"
+          ],
+          "description": "Destination status"
+        },
+        "before_id": {
+          "type": "integer",
+          "description": "Place before this card in the destination column"
+        },
+        "after_id": {
+          "type": "integer",
+          "description": "Place after this card in the destination column"
+        }
+      },
+      "required": [
+        "card_id",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {}
+  },
+  {
+    "name": "kanban_add_note",
+    "description": "Add a Markdown work note to a card. Use notes to record progress, findings, decisions, and handoffs. Before finishing or handing work off, add a note beginning with [handoff] that states what is done, the next step, key files, and open questions. The latest handoff note is surfaced first in the next worker's brief and session-start context.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "card_id": {
+          "type": "integer",
+          "description": "Card ID"
+        },
+        "body": {
+          "type": "string",
+          "description": "Markdown note content"
+        }
+      },
+      "required": [
+        "card_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {}
+  },
+  {
+    "name": "kanban_archive_card",
+    "description": "Archive a card so it is removed from the board but can be restored. This consequential action requires the user's confirmation. Use it only when the card is no longer needed.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "card_id": {
+          "type": "integer",
+          "description": "Card ID"
+        }
+      },
+      "required": [
+        "card_id"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "consequentialHint": true
+    }
+  },
+  {
+    "name": "kanban_update_project_handoff",
+    "description": "Replace the project's Markdown handoff with information the next worker or owner needs. Update it when finishing work, handing work off, or when the project status changes significantly.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "description": "Project ID (slug)"
+        },
+        "handoff": {
+          "type": "string",
+          "description": "Replacement project handoff in Markdown"
+        }
+      },
+      "required": [
+        "project_id",
+        "handoff"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {}
+  },
+  {
+    "name": "kanban_navigate",
+    "description": "Change the user's view to overview, all boards (flat or swimlane), a project board, or activity. Optional filters can be applied and a card can be opened. Use this when the user should see a particular result.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "view": {
+          "type": "string",
+          "enum": [
+            "overview",
+            "board",
+            "project",
+            "activity"
+          ],
+          "description": "Destination view"
+        },
+        "layout": {
+          "type": "string",
+          "enum": [
+            "flat",
+            "swimlane"
+          ],
+          "description": "Layout used when view=board"
+        },
+        "project": {
+          "type": "string",
+          "description": "Project ID for view=project; optional filter for view=activity"
+        },
+        "card": {
+          "type": "integer",
+          "description": "Card ID to open"
+        },
+        "filters": {
+          "type": "object",
+          "description": "Board filter criteria",
+          "properties": {
+            "q": {
+              "type": "string",
+              "description": "Search keyword"
+            },
+            "agent": {
+              "type": "string",
+              "enum": [
+                "codex",
+                "claude",
+                "owner",
+                "none"
+              ],
+              "description": "Current assignee"
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "p0",
+                "p1",
+                "p2",
+                "p3"
+              ],
+              "description": "Priority"
+            },
+            "blocked": {
+              "type": "boolean",
+              "description": "Show only blocked cards"
+            },
+            "tag": {
+              "type": "string",
+              "description": "Tag"
+            },
+            "needs_owner": {
+              "type": "boolean",
+              "description": "Show only cards awaiting an owner decision or acceptance"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "view"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {}
+  },
+  {
+    "name": "kanban_list_comments",
+    "description": "List comment-thread inbox items, defaulting to open threads. Each item includes the root comment, replies, card, and project. Use this to review questions from the owner and identify unanswered threads; filter by status, target, project, or card ID.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "open",
+            "answered",
+            "resolved",
+            "all"
+          ],
+          "description": "Thread status; defaults to open. Use all to skip status filtering."
+        },
+        "target": {
+          "type": "string",
+          "enum": [
+            "codex",
+            "claude"
+          ],
+          "description": "Show threads assigned to the selected agent"
+        },
+        "project": {
+          "type": "string",
+          "description": "Project ID (slug)"
+        },
+        "card_id": {
+          "type": "integer",
+          "description": "Show threads for this card"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Number of items, 1 to 200; defaults to 50"
+        }
+      },
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "kanban_add_comment",
+    "description": "Start a comment thread on a card and assign it to Codex, Claude, or either agent. The target defaults to Codex, and any routes to Codex. This is the owner's channel for asking agents questions. Agents cannot start comment threads.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "card_id": {
+          "type": "integer",
+          "description": "Card ID"
+        },
+        "body": {
+          "type": "string",
+          "description": "Markdown comment, 1 to 20,000 characters"
+        },
+        "target": {
+          "type": "string",
+          "enum": [
+            "codex",
+            "claude",
+            "any"
+          ],
+          "description": "Reply target; defaults to Codex. any routes to Codex.",
+          "default": "codex"
+        }
+      },
+      "required": [
+        "card_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {}
+  },
+  {
+    "name": "kanban_reply_comment",
+    "description": "Reply to a comment thread using any comment ID in that thread. An agent reply marks it answered; an owner reply reopens it. Lead with the conclusion, give supporting evidence, and label inferences and open questions.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "comment_id": {
+          "type": "integer",
+          "description": "Any comment ID in the thread"
+        },
+        "body": {
+          "type": "string",
+          "description": "Markdown reply, 1 to 20,000 characters"
+        }
+      },
+      "required": [
+        "comment_id",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {}
+  }
+]

@@ -1,0 +1,19 @@
+services:
+  agent-kanban:
+    build: .
+    image: agent-kanban:local
+    restart: unless-stopped
+    ports:
+      - "${KANBAN_HOST_PORT:-3600}:3600"
+    volumes:
+      - agent-kanban-data:/app/data
+    env_file: .env
+    environment:
+      PORT: "3600"
+      KANBAN_DATA_DIR: /app/data
+      KANBAN_TIMEZONE: ${KANBAN_TIMEZONE:-UTC}
+      TZ: ${KANBAN_TIMEZONE:-UTC}
+      KANBAN_TRUST_PROXY: ${KANBAN_TRUST_PROXY:-0}
+
+volumes:
+  agent-kanban-data:

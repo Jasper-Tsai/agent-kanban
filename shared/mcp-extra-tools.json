@@ -1,0 +1,119 @@
+[
+  {
+    "name": "kanban_list_projects",
+    "description": "List all projects, including archived ones, with card counts by status, blocked counts, owner-waiting counts, handoffs, and a dormant marker. A project is dormant when it has no incomplete cards and no open comment threads; a new card or comment reactivates it. Use this before starting work to find project IDs and handoffs.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "kanban_create_project",
+    "description": "Create a project only when kanban_list_projects shows that it does not already exist. The ID must be a lowercase alphanumeric slug with hyphens, 2 to 40 characters. If no color is provided, one is selected automatically.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Project ID (slug, for example sample-project)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable display name"
+        },
+        "color": {
+          "type": "string",
+          "description": "Color in #RRGGBB format; selected automatically when omitted"
+        },
+        "description": {
+          "type": "string",
+          "description": "One-sentence project summary"
+        },
+        "repo_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Path to the local repository"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Project website URL"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {}
+  },
+  {
+    "name": "kanban_list_events",
+    "description": "List activity events from newest to oldest, showing who did what and when. Use this to review recent work by actor or project. Use next_before to fetch an earlier page.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "description": "Number of items, 1 to 200; defaults to 50"
+        },
+        "project": {
+          "type": "string",
+          "description": "Filter by project ID"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "codex",
+            "claude",
+            "owner",
+            "webmcp",
+            "system"
+          ],
+          "description": "Filter by actor"
+        },
+        "before": {
+          "type": "integer",
+          "description": "Return only events with an ID below this value (pagination)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "kanban_get_brief",
+    "description": "Get a card's task package before starting, taking over, or handing off work. It includes core card fields, the description (task template, up to 4,000 characters by default), the latest [handoff] note, the three newest other notes, up to five open comment threads, and the project handoff (up to 1,000 characters), plus formatted text. When truncated, truncated=true; set full=true to remove all truncation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "card_id": {
+          "type": "integer",
+          "description": "Card ID"
+        },
+        "full": {
+          "type": "boolean",
+          "description": "When true, include all other notes and all open comment threads without truncation"
+        }
+      },
+      "required": [
+        "card_id"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true
+    }
+  }
+]

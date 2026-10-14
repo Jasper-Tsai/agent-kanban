@@ -1,0 +1,37 @@
+{
+  "projects": [
+    {
+      "id": "demo-api",
+      "name": "Demo API",
+      "color": "#5CC8E0",
+      "description": "A fictional service for exploring API development tasks.",
+      "handoff": "Start with the health endpoint and record verification results on each card.",
+      "cards": [
+        { "title": "Add a health endpoint", "status": "in_progress", "agent": "codex", "priority": "p1", "description": "Return service status as JSON and verify the response." },
+        { "title": "Choose the API versioning policy", "status": "todo", "agent": "owner", "priority": "p2", "needs_owner": true }
+      ]
+    },
+    {
+      "id": "demo-web",
+      "name": "Demo Web",
+      "color": "#C4A5FF",
+      "description": "A fictional web application for exploring collaborative UI work.",
+      "handoff": "Review the empty state before starting the next screen.",
+      "cards": [
+        { "title": "Review the dashboard empty state", "status": "review", "agent": "claude", "priority": "p2" },
+        { "title": "Add keyboard navigation", "status": "backlog", "agent": "none", "priority": "p2" }
+      ]
+    },
+    {
+      "id": "docs-site",
+      "name": "Documentation Site",
+      "color": "#5FCB8F",
+      "description": "A fictional documentation project for exploring handoffs and completed work.",
+      "handoff": "Keep setup examples reproducible and document required environment variables.",
+      "cards": [
+        { "title": "Write the getting-started guide", "status": "done", "agent": "claude", "priority": "p2" },
+        { "title": "Document the backup schedule", "status": "todo", "agent": "codex", "priority": "p3" }
+      ]
+    }
+  ]
+}
