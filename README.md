@@ -25,9 +25,11 @@
   <a href="docs/ARCHITECTURE.md">Architecture</a>
 </p>
 
-<p align="center">
-  <img src="docs/assets/screenshot-board.jpg" alt="The combined board with cards assigned to Codex, Claude and the owner" width="100%">
-</p>
+## 🎬 See it in action
+
+https://github.com/user-attachments/assets/d727babf-0813-4b72-bae9-c3f271c62090
+
+<p align="center"><sub>A 27-second tour: live board updates from Codex and Claude, asking an agent on a card, the <code>kb brief</code> task packet, one-click approval and the 繁體中文 UI.</sub></p>
 
 ---
 
@@ -119,6 +121,11 @@ Start with the health endpoint and record verification results on each card.
 ```
 
 ## 🖼️ Screenshots
+
+<p align="center">
+  <img src="docs/assets/screenshot-board.jpg" alt="The combined board with cards assigned to Codex, Claude and the owner" width="100%"><br>
+  <sub><b>Combined board.</b> Every project in one view, with the blocked column, owner flags and agent badges.</sub>
+</p>
 
 <table>
   <tr>
